@@ -3,7 +3,7 @@
  *
  * @param x
  * @param y
- * @return {{lon: *, error: null, lat: *}}
+ * @return {{lat: number, lon: number}}
  */
 const convert = (x, y) => {
     const x0 = 155000.000;
@@ -56,18 +56,17 @@ const convert = (x, y) => {
     const lWgs = l + (-37.902 + 0.329 * (f - 52) - 14.667 * (l - 5)) / 100000;
 
     return {
-        error: null,
         lat: fWgs,
         lon: lWgs
     }
 };
 
 /**
- * Exports the converter module
- *
- * @param x
- * @param y
- * @return {{lon: *, error: null, lat: *}|{lon: null, error: string, lat: null}}
+ * Convert rd(x, y) to lat, lon.
+ * @param x number
+ * @param y number
+ * @returns {{ lat: number, lon: number }}
+ * @throws {Error} when the input is out of bounds.
  */
 module.exports = (x, y) => {
     x = parseFloat(x);
@@ -76,19 +75,11 @@ module.exports = (x, y) => {
     if (y < 1000) y *= 1000;
 
     if (x < 0 || x > 290000) {
-        return {
-            error: new Error("Value 'X' must be between 0 and 290(000)"),
-            lat: null,
-            lon: null
-        }
+        throw new Error("Value 'X' must be between 0 and 290(000)");
     }
 
     if (y < 290000 || y > 630000) {
-        return {
-            error: new Error("Value 'Y' must be between 290(000) and 630(000)"),
-            lat: null,
-            lon: null
-        }
+        throw new Error("Value 'Y' must be between 290(000) and 630(000)");
     }
 
     return convert(x, y);
